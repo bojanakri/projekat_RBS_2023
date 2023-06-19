@@ -33,6 +33,7 @@ public class CommentRepository {
             statement.setInt(2, comment.getUserId());
             statement.setString(3, comment.getComment());
             statement.executeUpdate();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
