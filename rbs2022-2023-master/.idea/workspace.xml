@@ -51,6 +51,7 @@
     &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
     &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
     &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/Bojana/OneDrive/Documents/GitHub/projekat_RBS_2023/rbs2022-2023-master&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
@@ -66,7 +67,7 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected="Maven.SonarQube Analysis">
+  <component name="RunManager" selected="Spring Boot.SecureSoftwareDevelopmentApplication">
     <configuration name="SonarQube Analysis" type="MavenRunConfiguration" factoryName="Maven">
       <MavenSettings>
         <option name="myGeneralSettings" />
@@ -79,7 +80,7 @@
             <option name="goals">
               <list>
                 <option value="sonar:sonar" />
-                <option value="-Dsonar.login=sqp_3636ead9f731ef64b478136f8a698a00c4749935" />
+                <option value="-Dsonar.login=sqp_1f435d51abf1912d5f681712f994f541060b379a" />
               </list>
             </option>
             <option name="pomFileName" />
@@ -123,6 +124,12 @@
       <workItem from="1672689990079" duration="635000" />
       <workItem from="1672765228561" duration="5179000" />
       <workItem from="1672779244740" duration="1412000" />
+      <workItem from="1672780680716" duration="666000" />
+      <workItem from="1672859185645" duration="640000" />
+      <workItem from="1675025364736" duration="824000" />
+      <workItem from="1680378255045" duration="3302000" />
+      <workItem from="1680432546539" duration="1138000" />
+      <workItem from="1687002286396" duration="5103000" />
     </task>
     <task id="LOCAL-00001" summary="Init commit">
       <created>1670698325007</created>
