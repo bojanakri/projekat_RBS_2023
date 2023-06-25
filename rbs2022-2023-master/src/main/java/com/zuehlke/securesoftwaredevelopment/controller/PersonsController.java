@@ -1,6 +1,7 @@
 package com.zuehlke.securesoftwaredevelopment.controller;
 
 import com.zuehlke.securesoftwaredevelopment.config.AuditLogger;
+import com.zuehlke.securesoftwaredevelopment.config.SecurityUtil;
 import com.zuehlke.securesoftwaredevelopment.domain.Person;
 import com.zuehlke.securesoftwaredevelopment.domain.User;
 import com.zuehlke.securesoftwaredevelopment.repository.PersonRepository;
@@ -68,8 +69,14 @@ public class PersonsController {
         if (!csrf.equals(csrfToken)) {
             throw new AccessDeniedException("Forbidden");
         }
-        personRepository.update(person);
-        return "redirect:/persons/" + person.getId();
+        User user = SecurityUtil.getCurrentUser();
+        if (user.getId() == Integer.parseInt(person.getId())) {
+            personRepository.update(person);
+            return "person";
+        } else {
+            personRepository.update(person);
+            return "redirect:/persons/" + person.getId();
+        }
     }
 
     @GetMapping("/persons")
