@@ -1,6 +1,6 @@
 package com.zuehlke.securesoftwaredevelopment.repository;
 
-import com.zuehlke.securesoftwaredevelopment.domain.Comment;
+import com.zuehlke.securesoftwaredevelopment.config.AuditLogger;
 import com.zuehlke.securesoftwaredevelopment.domain.Rating;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,15 +38,17 @@ public class RatingRepository {
                 preparedStatement.setInt(2, rating.getMovieId());
                 preparedStatement.setInt(3, rating.getUserId());
                 preparedStatement.executeUpdate();
+                AuditLogger.getAuditLogger(MovieRepository.class).audit("Rating " + rating.getRating() + " for movie " + rating.getMovieId() + " updated by user " + rating.getUserId());
             } else {
                 PreparedStatement preparedStatement = connection.prepareStatement(query3);
                 preparedStatement.setInt(1, rating.getMovieId());
                 preparedStatement.setInt(2, rating.getUserId());
                 preparedStatement.setInt(3, rating.getRating());
                 preparedStatement.executeUpdate();
+                AuditLogger.getAuditLogger(MovieRepository.class).audit("Rating " + rating.getRating() + " for movie " + rating.getMovieId() + " created by user " + rating.getUserId());
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.warn("Creating or updating of rating for a movie :" + rating.getMovieId() + " by user: " + rating.getUserId() + " failed!");
         }
     }
 
@@ -60,7 +62,7 @@ public class RatingRepository {
                 ratingList.add(new Rating(rs.getInt(1), rs.getInt(2), rs.getInt(3)));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.warn("Getting list of all ratings for a movie: " + movieId + " failed!");
         }
         return ratingList;
     }
