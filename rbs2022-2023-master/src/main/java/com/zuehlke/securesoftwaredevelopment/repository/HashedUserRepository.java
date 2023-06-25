@@ -32,7 +32,7 @@ public class HashedUserRepository {
                 return new HashedUser(username, passwordHash, salt, totpKey);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.warn("Finding hashed user " + username + " failed!");
         }
         return null;
     }
@@ -46,7 +46,7 @@ public class HashedUserRepository {
 
             statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.warn("Update hashed user failed for username " + username);
         }
     }
 }

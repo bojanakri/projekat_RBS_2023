@@ -37,12 +37,12 @@ public class MovieRepository {
                 movieList.add(movie);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.warn("Getting list of all movies failed!");
         }
         return movieList;
     }
 
-    public List<Movie> search(String searchTerm) throws SQLException {
+    public List<Movie> search(String searchTerm) {
         List<Movie> movieList = new ArrayList<>();
         String query = "SELECT DISTINCT m.id, m.title, m.description FROM movies m, movies_to_genres mg, genres g" +
                 " WHERE m.id = mg.movieId" +
@@ -55,6 +55,8 @@ public class MovieRepository {
             while (rs.next()) {
                 movieList.add(createMovieFromResultSet(rs));
             }
+        }catch (SQLException e){
+            LOG.warn("Searching list of movies with given search term: " + searchTerm + " failed!");
         }
         return movieList;
     }
@@ -74,6 +76,7 @@ public class MovieRepository {
                         try {
                             return g.getId() == rs2.getInt(2);
                         } catch (SQLException e) {
+                            LOG.error("Runtime exception happened because of getting genres for movie with movie ID " + movieId);
                             throw new RuntimeException(e);
                         }
                     }).findFirst().get();
@@ -83,7 +86,7 @@ public class MovieRepository {
                 return movie;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.warn("Getting movie with movie id: " + movieId + " failed!");
         }
 
         return null;
@@ -98,6 +101,7 @@ public class MovieRepository {
             statement.setString(1, movie.getTitle());
             statement.setString(2, movie.getDescription());
             statement.executeUpdate();
+            AuditLogger.getAuditLogger(MovieRepository.class).audit("Movie added " + movie.getTitle());
             ResultSet generatedKeys = statement.getGeneratedKeys();
             if (generatedKeys.next()) {
                 id = generatedKeys.getLong(1);
@@ -110,12 +114,12 @@ public class MovieRepository {
                         statement2.setInt(2, genre.getId());
                         statement2.executeUpdate();
                     } catch (SQLException e) {
-                        e.printStackTrace();
+                        LOG.warn("Inserting into movies_to_genres table failed", e);
                     }
                 });
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.warn("Adding a new movie " + movie.getTitle() + " failed!");
         }
         return id;
     }
@@ -132,15 +136,21 @@ public class MovieRepository {
             statement.executeUpdate(query2);
             statement.executeUpdate(query3);
             statement.executeUpdate(query4);
+            AuditLogger.getAuditLogger(MovieRepository.class).audit("Movie with id " + movieId + " deleted");
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.warn("Deleting movie with id: " + movieId + " failed!");
         }
     }
 
-    private Movie createMovieFromResultSet(ResultSet rs) throws SQLException {
-        int id = rs.getInt(1);
-        String title = rs.getString(2);
-        String description = rs.getString(3);
-        return new Movie(id, title, description, new ArrayList<>());
+    private Movie createMovieFromResultSet(ResultSet rs) {
+        try{
+            int id = rs.getInt(1);
+            String title = rs.getString(2);
+            String description = rs.getString(3);
+            return new Movie(id, title, description, new ArrayList<>());
+        }catch (SQLException e) {
+            LOG.warn("Creating Movie From ResultSet failed!");
+        }
+        return null;
     }
 }
