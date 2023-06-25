@@ -40,7 +40,7 @@
       </tr>
       </tbody>
     </table>
-    <a href="/create-form">Add movie</a>
+    <a href="/create-form" sec:authorize="hasAuthority('CREATE_MOVIE')">Add movie</a>
   </div>
   <template id="row-template">
     <tr>

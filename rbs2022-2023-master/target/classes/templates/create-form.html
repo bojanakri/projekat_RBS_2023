@@ -9,7 +9,7 @@
     <title>Create form</title>
 </head>
 <body>
-<div layout:fragment="content">
+<div layout:fragment="content" sec:authorize="hasAuthority('CREATE_MOVIE')">
     <h1>Add movie</h1>
     <div class="row">
         <form class="col-5" method="POST" th:action="@{/movies}">
