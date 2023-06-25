@@ -9,7 +9,7 @@
     <title>Users</title>
 </head>
 <body>
-<div layout:fragment="content">
+<div layout:fragment="content" sec:authorize="hasAuthority('VIEW_PERSONS_LIST')">
     <h1>Users</h1>
 
     <div class="input-group">

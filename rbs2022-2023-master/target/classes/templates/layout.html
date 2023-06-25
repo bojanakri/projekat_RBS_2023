@@ -35,7 +35,7 @@
                 <a class="nav-link" th:href="@{/movies}">Movies</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" th:href="@{/persons}">Users</a>
+                <a class="nav-link" th:href="@{/persons}" sec:authorize="hasAuthority('VIEW_PERSONS_LIST')">Users</a>
             </li>
         </ul>
         <ul class="navbar-nav ml-auto">
