@@ -34,12 +34,12 @@ public class PersonRepository {
                 personList.add(createPersonFromResultSet(rs));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.warn("Getting list of persons failed!", e);
         }
         return personList;
     }
 
-    public List<Person> search(String searchTerm) throws SQLException {
+    public List<Person> search(String searchTerm){
         List<Person> personList = new ArrayList<>();
         String query = "SELECT id, firstName, lastName, email FROM persons WHERE UPPER(firstName) like UPPER('%" + searchTerm + "%')" +
                 " OR UPPER(lastName) like UPPER('%" + searchTerm + "%')";
@@ -49,6 +49,8 @@ public class PersonRepository {
             while (rs.next()) {
                 personList.add(createPersonFromResultSet(rs));
             }
+        } catch (SQLException e) {
+            LOG.warn("Searching for a list of persons with search term: " + searchTerm + " failed!");
         }
         return personList;
     }
@@ -62,7 +64,7 @@ public class PersonRepository {
                 return createPersonFromResultSet(rs);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.warn("Getting person with id: " + personId + " failed!");
         }
 
         return null;
@@ -74,17 +76,23 @@ public class PersonRepository {
              Statement statement = connection.createStatement();
         ) {
             statement.executeUpdate(query);
+            AuditLogger.getAuditLogger(PersonRepository.class).audit("Deleted user with id " + personId);
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.warn("Deleting person with id: " + personId + " failed!");
         }
     }
 
-    private Person createPersonFromResultSet(ResultSet rs) throws SQLException {
-        int id = rs.getInt(1);
-        String firstName = rs.getString(2);
-        String lastName = rs.getString(3);
-        String email = rs.getString(4);
-        return new Person("" + id, firstName, lastName, email);
+    private Person createPersonFromResultSet(ResultSet rs){
+        try{
+            int id = rs.getInt(1);
+            String firstName = rs.getString(2);
+            String lastName = rs.getString(3);
+            String email = rs.getString(4);
+            return new Person("" + id, firstName, lastName, email);
+        }catch (SQLException e) {
+            LOG.warn("Creating person with ResultSet failed!");
+        }
+        return null;
     }
 
     public void update(Person personUpdate) {
@@ -99,8 +107,23 @@ public class PersonRepository {
             statement.setString(1, firstName);
             statement.setString(2, email);
             statement.executeUpdate();
+            if (!personFromDb.getFirstName().equals(personUpdate.getFirstName())){
+                AuditLogger.getAuditLogger(PersonRepository.class).auditChange(
+                        new Entity("person.firstName", String.valueOf(personFromDb.getId()), String.valueOf(personFromDb.getFirstName()), String.valueOf(personUpdate.getFirstName()))
+                );
+            }
+            if (!personFromDb.getLastName().equals(personUpdate.getLastName())) {
+                AuditLogger.getAuditLogger(PersonRepository.class).auditChange(
+                        new Entity("person.lastName", String.valueOf(personFromDb.getId()), String.valueOf(personFromDb.getLastName()), String.valueOf(personUpdate.getLastName()))
+                );
+            }
+            if (!personFromDb.getEmail().equals(personUpdate.getEmail())) {
+                AuditLogger.getAuditLogger(PersonRepository.class).auditChange(
+                        new Entity("person.email", String.valueOf(personFromDb.getId()), String.valueOf(personFromDb.getEmail()), String.valueOf(personUpdate.getEmail()))
+                );
+            }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.warn("Updating person with id: " + personFromDb.getId() + " failed!");
         }
     }
 }
