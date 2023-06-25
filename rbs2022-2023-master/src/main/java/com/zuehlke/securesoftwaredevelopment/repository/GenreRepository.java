@@ -32,7 +32,7 @@ public class GenreRepository {
                 genreList.add(new Genre(rs.getInt(1), rs.getString(2)));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.warn("Getting list of genres failed!");
         }
         return genreList;
     }

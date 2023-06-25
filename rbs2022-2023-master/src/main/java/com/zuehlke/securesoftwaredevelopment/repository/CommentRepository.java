@@ -1,5 +1,7 @@
 package com.zuehlke.securesoftwaredevelopment.repository;
 
+import com.zuehlke.securesoftwaredevelopment.config.AuditLogger;
+import com.zuehlke.securesoftwaredevelopment.config.Entity;
 import com.zuehlke.securesoftwaredevelopment.domain.Comment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,9 +35,17 @@ public class CommentRepository {
             statement.setInt(2, comment.getUserId());
             statement.setString(3, comment.getComment());
             statement.executeUpdate();
-
+            AuditLogger.getAuditLogger(CommentRepository.class).auditChange(
+                    new Entity(
+                            "comment.add",
+                            comment.getUserId().toString(),
+                            "Before ---",
+                            comment.getComment()
+                    )
+            );
         } catch (SQLException e) {
-            e.printStackTrace();
+            //LOG.warn("Comm adding failed", e); this showed sql insert statement, so not good solution
+            LOG.warn("Comment "+comment.getComment() + "adding failed because of error made by user " + comment.getUserId().toString());
         }
     }
 
@@ -49,7 +59,7 @@ public class CommentRepository {
                 commentList.add(new Comment(rs.getInt(1), rs.getInt(2), rs.getString(3)));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.warn("Getting all comments for movie " + movieId + " failed!");
         }
         return commentList;
     }
