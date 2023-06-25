@@ -59,7 +59,7 @@
     <b th:text="${comment.personName}"></b>
     <div class="form-control" th:id="${iter.index}" th:text="${comment.comment}" disabled></div>
   </div>
-  <div class="form-group">
+  <div class="form-group" sec:authorize="hasAuthority('ADD_COMMENT')">
     <label for="addComment">Add comment</label>
     <textarea class="form-control" id="addComment" rows="3" placeholder="Comment..."></textarea>
     <button id="createComment" class="btn btn-primary mt-2">Create comment</button>

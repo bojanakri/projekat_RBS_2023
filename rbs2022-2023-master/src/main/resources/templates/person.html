@@ -9,7 +9,7 @@
     <title>Profile</title>
 </head>
 <body>
-<div layout:fragment="content">
+<div layout:fragment="content" sec:authorize="hasAuthority('VIEW_MY_PROFILE')">
     <h1>Profile</h1>
     <div class="row">
         <form method="POST" action="/update-person" class="col-5">
